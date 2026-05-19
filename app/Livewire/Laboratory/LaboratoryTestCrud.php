@@ -87,6 +87,6 @@ class LaboratoryTestCrud extends Component
         return view('livewire.laboratory.laboratory-test-crud', [
             'areas' => LaboratoryArea::orderBy('nombre')->get(['id', 'nombre']),
             'tests' => LaboratoryTest::withTrashed()->with(['area:id,nombre'])->when($this->search !== '', fn($q) => $q->whereAny(['codigo', 'nombre'], 'like', "%{$this->search}%"))->when($this->areaFilter, fn($q) => $q->where('laboratory_area_id', $this->areaFilter))->orderByDesc('id')->paginate(10),
-        ]);
+        ])->layout('layouts.app');
     }
 }

@@ -30,5 +30,5 @@ class LaboratoryAreaCrud extends Component
     public function save(): void { $this->validate(); LaboratoryArea::updateOrCreate(['id'=>$this->editingId],[ 'nombre'=>$this->nombre,'descripcion'=>$this->descripcion,'estado'=>$this->estado]); $this->resetForm(); }
     public function delete(int $id): void { LaboratoryArea::findOrFail($id)->delete(); }
     public function restore(int $id): void { LaboratoryArea::withTrashed()->findOrFail($id)->restore(); }
-    public function render() { return view('livewire.laboratory.area-crud',['areas'=>LaboratoryArea::withTrashed()->when($this->search!=='',fn($q)=>$q->where('nombre','like',"%{$this->search}%"))->orderByDesc('id')->paginate(10)]); }
+    public function render() { return view('livewire.laboratory.area-crud',['areas'=>LaboratoryArea::withTrashed()->when($this->search!=='',fn($q)=>$q->where('nombre','like',"%{$this->search}%"))->orderByDesc('id')->paginate(10)])->layout('layouts.app'); }
 }
