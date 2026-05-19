@@ -26,7 +26,6 @@
                         @endforeach
                     </select>
                 </div>
-
                 <div class="col-12 col-lg-3">
                     <label class="form-label small text-muted mb-1">Pruebas individuales</label>
                     <select multiple class="form-select" wire:model="test_ids">
@@ -34,9 +33,7 @@
                             <option value="{{ $t->id }}">{{ $t->nombre }}</option>
                         @endforeach
                     </select>
-                    <small class="text-muted">Puedes seleccionar varias pruebas.</small>
                 </div>
-
                 <div class="col-12 col-lg-3">
                     <label class="form-label small text-muted mb-1">Perfiles</label>
                     <select multiple class="form-select" wire:model="profile_ids">
@@ -45,7 +42,6 @@
                         @endforeach
                     </select>
                 </div>
-
                 <div class="col-12 col-lg-3">
                     <label class="form-label small text-muted mb-1">Paquetes</label>
                     <select multiple class="form-select" wire:model="package_ids">
@@ -57,9 +53,7 @@
             </div>
 
             <div class="mt-3 d-flex justify-content-end">
-                <button class="btn btn-primary px-4" wire:click="save">
-                    Crear orden
-                </button>
+                <button class="btn btn-primary px-4" wire:click="save">Crear orden</button>
             </div>
         </div>
 
@@ -68,45 +62,79 @@
             <small class="text-muted">Seguimiento en tiempo real del flujo de trabajo</small>
         </div>
 
+        <div class="mb-3 position-relative">
+            <label class="form-label small text-muted mb-1">Buscar orden (autocomplete)</label>
+            <input type="text" class="form-control" wire:model.live.debounce.250ms="orderSearch"
+                   placeholder="ID de orden, nombre o DNI del paciente">
+            @if($orderSearch !== '' && $orderSuggestions->isNotEmpty())
+                <div class="autocomplete-results d-block" style="position: absolute; width: 100%;">
+                    @foreach($orderSuggestions as $suggestion)
+                        <button type="button" class="autocomplete-item"
+                                wire:click="$set('orderSearch','{{ addslashes($suggestion->nombres_apellidos) }}')">
+                            {{ $suggestion->nombres_apellidos }}
+                            <small class="text-muted">({{ $suggestion->numero_documento }})</small>
+                        </button>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
+        @if($editOrderId)
+            <div class="alert alert-info d-flex flex-column flex-md-row gap-2 align-items-md-end justify-content-between">
+                <div class="d-flex gap-2 align-items-end flex-wrap">
+                    <div>
+                        <label class="form-label small mb-1">Estado</label>
+                        <select class="form-select" wire:model="editEstado">
+                            @foreach($statuses as $status)
+                                <option value="{{ $status }}">{{ $status }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label small mb-1">Observación</label>
+                        <input type="text" class="form-control" wire:model="editObservacion">
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success btn-sm" wire:click="updateOrder">Guardar</button>
+                    <button class="btn btn-outline-secondary btn-sm" wire:click="cancelEdit">Cancelar</button>
+                </div>
+            </div>
+        @endif
+
         <div class="table-responsive border rounded-4">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>Paciente</th>
-                        <th>Estado</th>
-                        <th>Items</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Paciente</th>
+                    <th>Estado</th>
+                    <th>Items</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @forelse($orders as $o)
-                        <tr>
-                            <td class="fw-semibold">#{{ $o->id }}</td>
-                            <td>{{ $o->patient?->nombres_apellidos }}</td>
-                            <td>
-                                <span class="badge rounded-pill bg-info-subtle text-info-emphasis">
-                                    {{ $o->estado }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">
-                                    {{ $o->items->count() }}
-                                </span>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">
-                                No hay órdenes registradas todavía.
-                            </td>
-                        </tr>
-                    @endforelse
+                @forelse($orders as $o)
+                    <tr>
+                        <td class="fw-semibold">#{{ $o->id }}</td>
+                        <td>{{ $o->patient?->nombres_apellidos }}</td>
+                        <td><span class="badge rounded-pill bg-info-subtle text-info-emphasis">{{ $o->estado }}</span></td>
+                        <td><span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">{{ $o->items->count() }}</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-primary" wire:click="startEdit({{ $o->id }})">Editar</button>
+                            <button class="btn btn-sm btn-outline-danger" wire:click="deleteOrder({{ $o->id }})"
+                                    wire:confirm="¿Seguro que deseas eliminar esta orden?">Eliminar</button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No hay órdenes registradas todavía.</td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="mt-3">
-            {{ $orders->links() }}
-        </div>
+        <div class="mt-3">{{ $orders->links() }}</div>
     </div>
 </div>
