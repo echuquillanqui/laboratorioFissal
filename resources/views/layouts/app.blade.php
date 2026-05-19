@@ -47,7 +47,7 @@
                                 <a class="nav-link {{ request()->routeIs('patients.*', 'consults.*', 'dialysis.*') ? 'active' : '' }}" href="{{ route('patients.index') }}">Pacientes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Resultados</a>
+                                <a class="nav-link" href="#">Laboratorio</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Reportes</a>
