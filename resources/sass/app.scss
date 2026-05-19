@@ -868,10 +868,69 @@ body {
     font-weight: 800;
 }
 
+.patient-record-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.patient-record-summary span {
+    display: inline-flex;
+    align-items: center;
+    color: #0d5a72;
+    background: rgba(27, 209, 209, 0.12);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 0.38rem 0.7rem;
+}
+
 .patient-option-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+}
+
+.patient-option-actions form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.empty-state-card {
+    padding: 3rem 1.5rem;
+    background: #f8fbff;
+    border: 1px dashed rgba(15, 35, 67, 0.18);
+    border-radius: 1.35rem;
+}
+
+.empty-state-card i {
+    color: var(--lf-blue);
+    font-size: 2.4rem;
+}
+
+.clinical-pagination .pagination {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0;
+}
+
+.clinical-pagination .page-link {
+    color: var(--lf-blue);
+    border: 1px solid var(--lf-border);
+    border-radius: 0.85rem;
+    font-weight: 800;
+    box-shadow: none;
+}
+
+.clinical-pagination .page-item.active .page-link {
+    color: #fff;
+    background: var(--lf-blue);
+    border-color: var(--lf-blue);
+}
+
+.clinical-pagination .page-item.disabled .page-link {
+    color: var(--lf-muted);
+    background: #f8fbff;
 }
 
 .patient-summary-card {

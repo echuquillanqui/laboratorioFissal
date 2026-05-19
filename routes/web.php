@@ -14,6 +14,11 @@ Route::view('/usuarios', 'users.index')->middleware('auth')->name('users.index')
 
 Route::middleware('auth')->group(function () {
     Route::get('/pacientes', [PatientWorkflowController::class, 'index'])->name('patients.index');
+    Route::get('/pacientes/nuevo', [PatientWorkflowController::class, 'create'])->name('patients.create');
+    Route::post('/pacientes', [PatientWorkflowController::class, 'store'])->name('patients.store');
+    Route::get('/pacientes/{patient}/editar', [PatientWorkflowController::class, 'edit'])->name('patients.edit');
+    Route::put('/pacientes/{patient}', [PatientWorkflowController::class, 'update'])->name('patients.update');
+    Route::delete('/pacientes/{patient}', [PatientWorkflowController::class, 'destroy'])->name('patients.destroy');
     Route::get('/consultas/generar', [PatientWorkflowController::class, 'createConsult'])->name('consults.create');
     Route::get('/pacientes/{patient}/consultas/generar', [PatientWorkflowController::class, 'createConsult'])->name('patients.consults.create');
     Route::get('/dialisis/generar', [PatientWorkflowController::class, 'createDialysis'])->name('dialysis.create');
