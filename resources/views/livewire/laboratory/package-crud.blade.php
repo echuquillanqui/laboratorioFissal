@@ -28,14 +28,35 @@
                             <input type="number" step="0.01" class="form-control" wire:model="precio" placeholder="0.00">
                         </div>
 
-                        <div class="col-lg-3 col-md-4">
+                        <div class="col-lg-3 col-md-6">
                             <label class="form-label fw-semibold">Pruebas incluidas</label>
-                            <select multiple class="form-select" wire:model="test_ids" style="min-height: 140px;">
-                                @foreach($tests as $t)
-                                    <option value="{{ $t->id }}">{{ $t->nombre }}</option>
+                            <div class="row g-2 mb-2">
+                                <div class="col-7">
+                                    <input class="form-control" wire:model.live.debounce.300ms="testSearch" placeholder="Buscar prueba...">
+                                </div>
+                                <div class="col-5">
+                                    <select class="form-select" wire:model.live="selectedAreaId">
+                                        <option value="">Todas</option>
+                                        @foreach($areas as $area)
+                                            <option value="{{ $area->id }}">{{ $area->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="border rounded p-2 bg-white" style="max-height: 160px; overflow:auto;">
+                                @forelse($tests as $t)
+                                    <button type="button" class="btn btn-sm {{ in_array($t->id, $test_ids, true) ? 'btn-primary' : 'btn-outline-secondary' }} rounded-pill me-1 mb-1" wire:click="toggleTest({{ $t->id }})">
+                                        {{ $t->nombre }}
+                                    </button>
+                                @empty
+                                    <small class="text-muted">Sin resultados.</small>
+                                @endforelse
+                            </div>
+                            <div class="mt-2">
+                                @foreach($selectedTests as $selected)
+                                    <span class="badge text-bg-primary me-1">{{ $selected->nombre }} <button type="button" class="btn btn-sm text-white p-0 ms-1" wire:click="removeTest({{ $selected->id }})">×</button></span>
                                 @endforeach
-                            </select>
-                            <small class="text-muted">Puedes seleccionar varias pruebas.</small>
+                            </div>
                         </div>
 
                         <div class="col-lg-3 col-md-4">

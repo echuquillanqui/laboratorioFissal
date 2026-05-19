@@ -37,12 +37,34 @@
                             @error('nombre') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label fw-semibold">Pruebas del perfil</label>
-                            <select multiple class="form-select" wire:model="test_ids" style="min-height: 120px;">
-                                @foreach($tests as $t)
-                                    <option value="{{ $t->id }}">{{ $t->nombre }}</option>
+                            <label class="form-label fw-semibold">Buscar y agregar pruebas</label>
+                            <div class="row g-2 mb-2">
+                                <div class="col-8">
+                                    <input class="form-control" wire:model.live.debounce.300ms="testSearch" placeholder="Buscar por nombre o código">
+                                </div>
+                                <div class="col-4">
+                                    <select class="form-select" wire:model.live="selectedAreaId">
+                                        <option value="">Todas las áreas</option>
+                                        @foreach($areas as $area)
+                                            <option value="{{ $area->id }}">{{ $area->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="border rounded p-2 bg-white" style="max-height: 190px; overflow:auto;">
+                                @forelse($tests as $t)
+                                    <button type="button" class="btn btn-sm {{ in_array($t->id, $test_ids, true) ? 'btn-primary' : 'btn-outline-secondary' }} rounded-pill me-1 mb-1" wire:click="toggleTest({{ $t->id }})">
+                                        {{ $t->nombre }} <small>({{ $t->codigo }})</small>
+                                    </button>
+                                @empty
+                                    <small class="text-muted">No hay pruebas con esos filtros.</small>
+                                @endforelse
+                            </div>
+                            <div class="mt-2">
+                                @foreach($selectedTests as $selected)
+                                    <span class="badge text-bg-primary me-1">{{ $selected->nombre }} <button type="button" class="btn btn-sm text-white p-0 ms-1" wire:click="removeTest({{ $selected->id }})">×</button></span>
                                 @endforeach
-                            </select>
+                            </div>
                             @error('test_ids') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                         <div class="col-md-3 d-flex align-items-end">
