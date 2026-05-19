@@ -46,8 +46,20 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('patients.*', 'consults.*', 'dialysis.*') ? 'active' : '' }}" href="{{ route('patients.index') }}">Pacientes</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Laboratorio</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ request()->routeIs('laboratory.*') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Laboratorio
+                                </a>
+                                <ul class="dropdown-menu shadow border-0 rounded-4 mt-2">
+                                    <li><a class="dropdown-item" href="{{ route('laboratory.areas.index') }}">Áreas</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('laboratory.tests.index') }}">Pruebas</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('laboratory.profiles.index') }}">Perfiles</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('laboratory.packages.index') }}">Paquetes</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('laboratory.orders.index') }}">Órdenes de laboratorio</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('laboratory.mass-orders.index') }}">Generar órdenes masivas</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('laboratory.results.index') }}">Resultados</a></li>
+                                </ul>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Reportes</a>

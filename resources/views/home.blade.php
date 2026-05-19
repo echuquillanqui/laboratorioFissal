@@ -98,21 +98,21 @@
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Accesos rápidos</h2>
                     <div class="quick-actions">
-                        <a href="#" class="quick-action">
+                        <a href="{{ route('patients.create') }}" class="quick-action">
                             <span>01</span>
                             Registrar paciente
                         </a>
-                        <a href="#" class="quick-action">
+                        <a href="{{ route('laboratory.results.index') }}" class="quick-action">
                             <span>02</span>
                             Cargar resultado
                         </a>
-                        <a href="#" class="quick-action">
+                        <a href="{{ route('laboratory.orders.index') }}" class="quick-action">
                             <span>03</span>
-                            Generar informe
+                            Gestionar órdenes
                         </a>
-                        <a href="#" class="quick-action">
+                        <a href="{{ route('laboratory.mass-orders.index') }}" class="quick-action">
                             <span>04</span>
-                            Revisar alertas
+                            Generar órdenes masivas
                         </a>
                     </div>
                 </div>
