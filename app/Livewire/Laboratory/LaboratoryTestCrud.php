@@ -40,9 +40,9 @@ class LaboratoryTestCrud extends Component
             'codigo' => 'required|max:30|unique:laboratory_tests,codigo,' . ($this->editingId ?? 'NULL') . ',id',
             'nombre' => 'required|max:150',
             'tipo_dato' => 'required|in:' . implode(',', LaboratoryTypeDato::values()),
-            'options' => $this->tipo_dato === 'opcion' ? 'required|array|min:1' : 'nullable|array',
-            'options.*.valor' => $this->tipo_dato === 'opcion' ? 'required|string|max:120' : 'nullable|string|max:120',
-            'options.*.etiqueta' => $this->tipo_dato === 'opcion' ? 'required|string|max:120' : 'nullable|string|max:120',
+            'options' => in_array($this->tipo_dato, ['opcion', 'booleano'], true) ? 'required|array|min:1' : 'nullable|array',
+            'options.*.valor' => in_array($this->tipo_dato, ['opcion', 'booleano'], true) ? 'required|string|max:120' : 'nullable|string|max:120',
+            'options.*.etiqueta' => in_array($this->tipo_dato, ['opcion', 'booleano'], true) ? 'required|string|max:120' : 'nullable|string|max:120',
         ];
     }
 
@@ -110,11 +110,11 @@ class LaboratoryTestCrud extends Component
             'valor_maximo_f' => $this->valor_maximo_f,
             'valor_alerta_minimo' => $this->valor_alerta_minimo,
             'valor_alerta_maximo' => $this->valor_alerta_maximo,
-            'tiene_opciones' => $this->tipo_dato === 'opcion',
+            'tiene_opciones' => in_array($this->tipo_dato, ['opcion', 'booleano'], true),
             'estado' => $this->estado,
         ]);
         $t->options()->delete();
-        if ($this->tipo_dato === 'opcion') {
+        if (in_array($this->tipo_dato, ['opcion', 'booleano'], true)) {
             foreach ($this->options as $i => $op) {
                 if (($op['valor'] ?? '') !== '' && ($op['etiqueta'] ?? '') !== '') {
                     $t->options()->create(['valor' => $op['valor'], 'etiqueta' => $op['etiqueta'], 'orden' => $i + 1]);

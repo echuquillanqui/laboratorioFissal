@@ -82,7 +82,7 @@
                         <div class="modal-body">
                             <div class="alert alert-primary border-0 rounded-4 d-flex gap-2 align-items-start">
                                 <span class="fw-bold">Sugerencia:</span>
-                                <span>Si el tipo de dato es <strong>opción</strong>, registra explícitamente todas las respuestas válidas (ej. Grupo sanguíneo: A, B, O, AB; Factor RH: POSITIVO, NEGATIVO).</span>
+                                <span>Si el tipo de dato es <strong>opción</strong> o <strong>booleano</strong>, registra explícitamente todas las respuestas válidas (ej. Grupo sanguíneo: A, B, O, AB; Factor RH: POSITIVO, NEGATIVO).</span>
                             </div>
 
                             <div class="row g-3">
@@ -162,7 +162,7 @@
                                 </div>
                             @endif
 
-                            @if($tipo_dato === 'opcion')
+                            @if(in_array($tipo_dato, ['opcion', 'booleano'], true))
                                 <div class="border rounded-4 p-3 mt-3 bg-light-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h6 class="mb-0">Opciones para este examen individual</h6>
