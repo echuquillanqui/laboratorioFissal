@@ -1,0 +1,5 @@
+<div class="card"><div class="card-body">
+<input class="form-control mb-2" placeholder="Buscar" wire:model.live="search">
+<div class="row g-2 mb-2"><div class="col"><input class="form-control" wire:model="nombre" placeholder="Nombre"></div><div class="col"><input class="form-control" wire:model="descripcion" placeholder="Descripción"></div><div class="col-auto"><button class="btn btn-primary" wire:click="save">Guardar</button></div></div>
+<table class="table table-sm"><tr><th>Nombre</th><th>Estado</th><th></th></tr>@foreach($areas as $a)<tr><td>{{ $a->nombre }}</td><td>{!! $a->deleted_at?'<span class="badge bg-danger">Eliminado</span>':'<span class="badge bg-success">Activo</span>' !!}</td><td><button class="btn btn-sm btn-outline-primary" wire:click="edit({{ $a->id }})">Editar</button> @if($a->deleted_at)<button class="btn btn-sm btn-warning" wire:click="restore({{ $a->id }})">Restaurar</button>@else<button class="btn btn-sm btn-danger" wire:click="delete({{ $a->id }})">Eliminar</button>@endif</td></tr>@endforeach</table>{{ $areas->links() }}
+</div></div>

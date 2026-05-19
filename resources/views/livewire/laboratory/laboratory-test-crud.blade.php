@@ -1,31 +1,6 @@
-<div class="card shadow-sm">
-    <div class="card-header d-flex flex-wrap gap-2 justify-content-between">
-        <input wire:model.live.debounce.300ms="search" class="form-control w-auto" placeholder="Buscar por código o nombre">
-        <select wire:model.live="areaFilter" class="form-select w-auto">
-            <option value="">Todas las áreas</option>
-            @foreach($areas as $area)
-                <option value="{{ $area->id }}">{{ $area->nombre }}</option>
-            @endforeach
-        </select>
-    </div>
-
-    <div class="table-responsive">
-        <table class="table table-striped mb-0">
-            <thead><tr><th>Código</th><th>Prueba</th><th>Área</th><th>Tipo</th></tr></thead>
-            <tbody>
-            @forelse($tests as $test)
-                <tr>
-                    <td>{{ $test->codigo }}</td>
-                    <td>{{ $test->nombre }}</td>
-                    <td>{{ $test->area?->nombre }}</td>
-                    <td>{{ $test->tipo_dato }}</td>
-                </tr>
-            @empty
-                <tr><td colspan="4" class="text-center">Sin registros.</td></tr>
-            @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <div class="card-footer">{{ $tests->links() }}</div>
-</div>
+<div class="card"><div class="card-body">
+<div class="row g-2 mb-2"><div class="col"><input class="form-control" wire:model.live="search" placeholder="Buscar prueba"></div><div class="col"><select class="form-select" wire:model.live="areaFilter"><option value="">Todas áreas</option>@foreach($areas as $a)<option value="{{ $a->id }}">{{ $a->nombre }}</option>@endforeach</select></div></div>
+<div class="row g-2 mb-2"><div class="col"><input class="form-control" wire:model="codigo" placeholder="Código"></div><div class="col"><input class="form-control" wire:model="nombre" placeholder="Nombre"></div><div class="col"><select class="form-select" wire:model="tipo_dato"><option>texto</option><option>numerico</option><option>opcion</option><option>booleano</option><option>multilinea</option></select></div><div class="col"><select class="form-select" wire:model="laboratory_area_id"><option value="">Área</option>@foreach($areas as $a)<option value="{{ $a->id }}">{{ $a->nombre }}</option>@endforeach</select></div><div class="col-auto"><button class="btn btn-primary" wire:click="save">Guardar</button></div></div>
+@if($tipo_dato==='opcion')<div class="mb-2">@foreach($options as $i=>$o)<div class="d-flex gap-2 mb-1"><input class="form-control" wire:model="options.{{ $i }}.valor" placeholder="Valor"><input class="form-control" wire:model="options.{{ $i }}.etiqueta" placeholder="Etiqueta"><button class="btn btn-outline-danger" wire:click="removeOption({{ $i }})">x</button></div>@endforeach<button class="btn btn-sm btn-secondary" wire:click="addOption">Agregar opción</button></div>@endif
+<table class="table table-sm"><tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Área</th><th></th></tr>@foreach($tests as $t)<tr><td>{{ $t->codigo }}</td><td>{{ $t->nombre }}</td><td>{{ $t->tipo_dato }}</td><td>{{ $t->area?->nombre }}</td><td><button class="btn btn-sm btn-outline-primary" wire:click="edit({{ $t->id }})">Editar</button>@if($t->deleted_at)<button class="btn btn-sm btn-warning" wire:click="restore({{ $t->id }})">Restaurar</button>@else<button class="btn btn-sm btn-danger" wire:click="delete({{ $t->id }})">Eliminar</button>@endif</td></tr>@endforeach</table>{{ $tests->links() }}
+</div></div>

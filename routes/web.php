@@ -27,6 +27,19 @@ Route::middleware('auth')->group(function () {
 
 use App\Livewire\Laboratory\LaboratoryTestCrud;
 
+use App\Livewire\Laboratory\LaboratoryAreaCrud;
+use App\Livewire\Laboratory\LaboratoryProfileCrud;
+use App\Livewire\Laboratory\LaboratoryPackageCrud;
+use App\Livewire\Laboratory\LaboratoryOrderManager;
+use App\Livewire\Laboratory\LaboratoryResultManager;
+use App\Livewire\Laboratory\LaboratoryMassOrderManager;
+
 Route::middleware('auth')->prefix('laboratorio')->name('laboratory.')->group(function () {
+    Route::get('/areas', LaboratoryAreaCrud::class)->name('areas.index');
     Route::get('/pruebas', LaboratoryTestCrud::class)->name('tests.index');
+    Route::get('/perfiles', LaboratoryProfileCrud::class)->name('profiles.index');
+    Route::get('/paquetes', LaboratoryPackageCrud::class)->name('packages.index');
+    Route::get('/ordenes', LaboratoryOrderManager::class)->name('orders.index');
+    Route::get('/resultados', LaboratoryResultManager::class)->name('results.index');
+    Route::get('/ordenes-masivas', LaboratoryMassOrderManager::class)->name('mass-orders.index');
 });
