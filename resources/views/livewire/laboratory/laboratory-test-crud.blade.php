@@ -69,7 +69,7 @@
             </table>
         </div>
 
-        {{ $tests->links() }}
+        {{ $tests->links('pagination::bootstrap-5') }}
 
         @if($showModal)
             <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,.45);">
@@ -119,9 +119,11 @@
                                 </div>
                             </div>
 
-                            @if($tipo_dato === 'numerico')
-                                <div class="border rounded-4 p-3 mt-3 bg-light-subtle">
-                                    <h6 class="mb-3">Valores referenciales y alertas</h6>
+                            <div class="border rounded-4 p-3 mt-3 bg-light-subtle">
+                                    <h6 class="mb-1">Valores referenciales y alertas</h6>
+                                    @if($tipo_dato !== 'numerico')
+                                        <p class="small text-muted mb-3">Estos campos se usan cuando el tipo de dato es numérico.</p>
+                                    @endif
                                     <div class="row g-3">
                                         <div class="col-md-3">
                                             <label class="form-label">Valor mínimo de referencia</label>
@@ -160,7 +162,6 @@
                                         Los valores de alerta permiten identificar resultados críticos fuera del rango esperado.
                                     </p>
                                 </div>
-                            @endif
 
                             @if(in_array($tipo_dato, ['opcion', 'booleano'], true))
                                 <div class="border rounded-4 p-3 mt-3 bg-light-subtle">
