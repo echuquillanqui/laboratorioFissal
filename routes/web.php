@@ -24,3 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dialisis/generar', [PatientWorkflowController::class, 'createDialysis'])->name('dialysis.create');
     Route::get('/pacientes/{patient}/dialisis/generar', [PatientWorkflowController::class, 'createDialysis'])->name('patients.dialysis.create');
 });
+
+use App\Livewire\Laboratory\LaboratoryTestCrud;
+
+Route::middleware('auth')->prefix('laboratorio')->name('laboratory.')->group(function () {
+    Route::get('/pruebas', LaboratoryTestCrud::class)->name('tests.index');
+});
