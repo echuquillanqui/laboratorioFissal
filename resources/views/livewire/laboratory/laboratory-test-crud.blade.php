@@ -119,6 +119,33 @@
                                 </div>
                             </div>
 
+                            @if($tipo_dato === 'numerico')
+                                <div class="border rounded-4 p-3 mt-3 bg-light-subtle">
+                                    <h6 class="mb-3">Valores referenciales y alertas</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Valor mínimo de referencia</label>
+                                            <input type="number" step="any" class="form-control" wire:model="valor_minimo" placeholder="Ej. 3.5">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Valor máximo de referencia</label>
+                                            <input type="number" step="any" class="form-control" wire:model="valor_maximo" placeholder="Ej. 5.5">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Alerta mínima</label>
+                                            <input type="number" step="any" class="form-control" wire:model="valor_alerta_minimo" placeholder="Ej. 3.0">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Alerta máxima</label>
+                                            <input type="number" step="any" class="form-control" wire:model="valor_alerta_maximo" placeholder="Ej. 6.0">
+                                        </div>
+                                    </div>
+                                    <p class="small text-muted mt-2 mb-0">
+                                        Los valores de alerta permiten identificar resultados críticos fuera del rango esperado.
+                                    </p>
+                                </div>
+                            @endif
+
                             @if($tipo_dato === 'opcion')
                                 <div class="border rounded-4 p-3 mt-3 bg-light-subtle">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
