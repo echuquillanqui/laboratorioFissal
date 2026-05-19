@@ -35,7 +35,7 @@ use App\Livewire\Laboratory\LaboratoryOrderManager;
 use App\Livewire\Laboratory\LaboratoryResultManager;
 use App\Livewire\Laboratory\LaboratoryMassOrderManager;
 
-Route::middleware('auth')->prefix('laboratorio')->name('laboratory.')->group(function () {
+Route::middleware('auth')->name('laboratory.')->group(function () {
     Route::get('/areas', LaboratoryAreaCrud::class)->name('areas.index');
     Route::get('/pruebas', LaboratoryTestCrud::class)->name('tests.index');
     Route::get('/perfiles', LaboratoryProfileCrud::class)->name('profiles.index');
