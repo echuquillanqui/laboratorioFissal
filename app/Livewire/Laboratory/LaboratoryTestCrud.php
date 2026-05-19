@@ -27,6 +27,7 @@ class LaboratoryTestCrud extends Component
     public ?float $valor_alerta_maximo = null;
     public bool $estado = true;
     public array $options = [['valor' => '', 'etiqueta' => '']];
+    public bool $showModal = false;
 
     protected function rules(): array
     {
@@ -35,7 +36,24 @@ class LaboratoryTestCrud extends Component
             'codigo' => 'required|max:30|unique:laboratory_tests,codigo,' . ($this->editingId ?? 'NULL') . ',id',
             'nombre' => 'required|max:150',
             'tipo_dato' => 'required|in:' . implode(',', LaboratoryTypeDato::values()),
+            'options' => $this->tipo_dato === 'opcion' ? 'required|array|min:1' : 'nullable|array',
+            'options.*.valor' => $this->tipo_dato === 'opcion' ? 'required|string|max:120' : 'nullable|string|max:120',
+            'options.*.etiqueta' => $this->tipo_dato === 'opcion' ? 'required|string|max:120' : 'nullable|string|max:120',
         ];
+    }
+
+    
+
+    public function openCreateModal(): void
+    {
+        $this->closeModal();
+        $this->showModal = true;
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->resetForm();
     }
 
     public function addOption(): void { $this->options[] = ['valor' => '', 'etiqueta' => '']; }
@@ -49,6 +67,7 @@ class LaboratoryTestCrud extends Component
         $this->estado = (bool) $t->estado;
         $this->options = $t->options->map(fn($o) => ['valor'=>$o->valor,'etiqueta'=>$o->etiqueta])->values()->all();
         if (!$this->options) $this->options = [['valor' => '', 'etiqueta' => '']];
+        $this->showModal = true;
     }
 
     public function save(): void
@@ -76,7 +95,7 @@ class LaboratoryTestCrud extends Component
                 }
             }
         }
-        $this->resetForm();
+        $this->closeModal();
     }
     public function delete(int $id): void { LaboratoryTest::findOrFail($id)->delete(); }
     public function restore(int $id): void { LaboratoryTest::withTrashed()->findOrFail($id)->restore(); }
