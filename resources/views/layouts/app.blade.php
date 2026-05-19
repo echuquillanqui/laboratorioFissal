@@ -106,7 +106,11 @@
         </nav>
 
         <main class="flex-grow-1 py-4 py-lg-5">
-            @yield('content')
+            @hasSection('content')
+                @yield('content')
+            @else
+                {{ $slot ?? '' }}
+            @endif
         </main>
     </div>
 
