@@ -139,6 +139,22 @@
                                             <label class="form-label">Alerta máxima</label>
                                             <input type="number" step="any" class="form-control" wire:model="valor_alerta_maximo" placeholder="Ej. 6.0">
                                         </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Referencia para varones (mínimo - máximo)</label>
+                                            <div class="input-group">
+                                                <input type="number" step="any" class="form-control" wire:model="valor_minimo_m" placeholder="Mínimo">
+                                                <span class="input-group-text">a</span>
+                                                <input type="number" step="any" class="form-control" wire:model="valor_maximo_m" placeholder="Máximo">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Referencia para mujeres (mínimo - máximo)</label>
+                                            <div class="input-group">
+                                                <input type="number" step="any" class="form-control" wire:model="valor_minimo_f" placeholder="Mínimo">
+                                                <span class="input-group-text">a</span>
+                                                <input type="number" step="any" class="form-control" wire:model="valor_maximo_f" placeholder="Máximo">
+                                            </div>
+                                        </div>
                                     </div>
                                     <p class="small text-muted mt-2 mb-0">
                                         Los valores de alerta permiten identificar resultados críticos fuera del rango esperado.

@@ -23,6 +23,10 @@ class LaboratoryTestCrud extends Component
     public string $tipo_dato = 'texto';
     public ?float $valor_minimo = null;
     public ?float $valor_maximo = null;
+    public ?float $valor_minimo_m = null;
+    public ?float $valor_maximo_m = null;
+    public ?float $valor_minimo_f = null;
+    public ?float $valor_maximo_f = null;
     public ?float $valor_alerta_minimo = null;
     public ?float $valor_alerta_maximo = null;
     public bool $estado = true;
@@ -81,7 +85,7 @@ class LaboratoryTestCrud extends Component
     {
         $t = LaboratoryTest::with('options')->withTrashed()->findOrFail($id);
         $this->editingId = $id;
-        foreach (['laboratory_area_id','codigo','nombre','descripcion','unidad_medida','tipo_dato','valor_minimo','valor_maximo','valor_alerta_minimo','valor_alerta_maximo'] as $f) { $this->{$f} = $t->{$f}; }
+        foreach (['laboratory_area_id','codigo','nombre','descripcion','unidad_medida','tipo_dato','valor_minimo','valor_maximo','valor_minimo_m','valor_maximo_m','valor_minimo_f','valor_maximo_f','valor_alerta_minimo','valor_alerta_maximo'] as $f) { $this->{$f} = $t->{$f}; }
         $this->estado = (bool) $t->estado;
         $this->options = $t->options->map(fn($o) => ['valor'=>$o->valor,'etiqueta'=>$o->etiqueta])->values()->all();
         if (!$this->options) $this->options = [['valor' => '', 'etiqueta' => '']];
@@ -100,6 +104,10 @@ class LaboratoryTestCrud extends Component
             'tipo_dato' => $this->tipo_dato,
             'valor_minimo' => $this->valor_minimo,
             'valor_maximo' => $this->valor_maximo,
+            'valor_minimo_m' => $this->valor_minimo_m,
+            'valor_maximo_m' => $this->valor_maximo_m,
+            'valor_minimo_f' => $this->valor_minimo_f,
+            'valor_maximo_f' => $this->valor_maximo_f,
             'valor_alerta_minimo' => $this->valor_alerta_minimo,
             'valor_alerta_maximo' => $this->valor_alerta_maximo,
             'tiene_opciones' => $this->tipo_dato === 'opcion',
@@ -117,7 +125,7 @@ class LaboratoryTestCrud extends Component
     }
     public function delete(int $id): void { LaboratoryTest::findOrFail($id)->delete(); }
     public function restore(int $id): void { LaboratoryTest::withTrashed()->findOrFail($id)->restore(); }
-    public function resetForm(): void { $this->reset(['editingId','laboratory_area_id','codigo','nombre','descripcion','unidad_medida','valor_minimo','valor_maximo','valor_alerta_minimo','valor_alerta_maximo']); $this->tipo_dato='texto';$this->estado=true;$this->options=[['valor'=>'','etiqueta'=>'']]; }
+    public function resetForm(): void { $this->reset(['editingId','laboratory_area_id','codigo','nombre','descripcion','unidad_medida','valor_minimo','valor_maximo','valor_minimo_m','valor_maximo_m','valor_minimo_f','valor_maximo_f','valor_alerta_minimo','valor_alerta_maximo']); $this->tipo_dato='texto';$this->estado=true;$this->options=[['valor'=>'','etiqueta'=>'']]; }
 
     public function render()
     {
