@@ -13,6 +13,8 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Inter:400,500,600,700,800" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @livewireStyles
@@ -42,7 +44,7 @@
                                 <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{ route('users.index') }}">Usuarios</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Pacientes</a>
+                                <a class="nav-link {{ request()->routeIs('patients.*', 'consults.*', 'dialysis.*') ? 'active' : '' }}" href="{{ route('patients.index') }}">Pacientes</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Resultados</a>

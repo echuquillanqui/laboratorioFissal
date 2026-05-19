@@ -623,3 +623,525 @@ body {
         width: 100%;
     }
 }
+
+.clinical-page {
+    .btn {
+        border-radius: 1rem;
+        font-weight: 800;
+        padding: 0.78rem 1.05rem;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(135deg, var(--lf-blue), #0741b8);
+        border: 0;
+        box-shadow: 0 16px 32px rgba(15, 91, 255, 0.22);
+    }
+}
+
+.clinical-hero {
+    position: relative;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: clamp(1.5rem, 3vw, 2.6rem);
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(237, 246, 255, 0.9)),
+        radial-gradient(circle at right top, rgba(15, 91, 255, 0.15), transparent 28rem);
+    border: 1px solid var(--lf-border);
+    border-radius: 1.75rem;
+    box-shadow: 0 18px 55px rgba(7, 26, 47, 0.08);
+}
+
+.clinical-hero::after {
+    position: absolute;
+    right: -4rem;
+    bottom: -5rem;
+    width: 13rem;
+    height: 13rem;
+    content: '';
+    border: 30px solid rgba(15, 91, 255, 0.07);
+    border-radius: 50%;
+}
+
+.clinical-hero-dialysis {
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(239, 255, 252, 0.9)),
+        radial-gradient(circle at right top, rgba(20, 184, 137, 0.18), transparent 28rem);
+}
+
+.clinical-hero-content,
+.clinical-hero-actions,
+.clinical-hero-badge {
+    position: relative;
+    z-index: 1;
+}
+
+.clinical-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.clinical-back {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 0.9rem;
+    color: var(--lf-blue);
+    font-size: 0.88rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.clinical-hero-badge {
+    display: grid;
+    place-items: center;
+    min-width: 132px;
+    min-height: 132px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--lf-blue), var(--lf-cyan));
+    border-radius: 2rem;
+    box-shadow: 0 22px 45px rgba(15, 91, 255, 0.25);
+    text-align: center;
+}
+
+.clinical-hero-badge i {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 2rem;
+}
+
+.clinical-hero-badge span {
+    font-weight: 900;
+}
+
+.clinical-hero-badge.dialysis {
+    background: linear-gradient(135deg, var(--lf-green), #08795d);
+    box-shadow: 0 22px 45px rgba(20, 184, 137, 0.24);
+}
+
+.clinical-card,
+.clinical-form-card,
+.patient-summary-card {
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    border-radius: 1.55rem;
+    box-shadow: 0 18px 55px rgba(7, 26, 47, 0.08);
+    backdrop-filter: blur(12px);
+}
+
+.clinical-stat {
+    position: relative;
+    min-height: 158px;
+    overflow: hidden;
+    padding: 1.25rem;
+    color: #fff;
+    border-radius: 1.35rem;
+    box-shadow: 0 18px 45px rgba(7, 26, 47, 0.12);
+}
+
+.clinical-stat::after {
+    position: absolute;
+    top: -3rem;
+    right: -2.25rem;
+    width: 8.5rem;
+    height: 8.5rem;
+    content: '';
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+}
+
+.clinical-stat i,
+.clinical-stat span,
+.clinical-stat strong,
+.clinical-stat small {
+    position: relative;
+    z-index: 1;
+}
+
+.clinical-stat i {
+    font-size: 1.35rem;
+}
+
+.clinical-stat span,
+.clinical-stat small {
+    display: block;
+    opacity: 0.84;
+    font-weight: 700;
+}
+
+.clinical-stat strong {
+    display: block;
+    margin: 0.55rem 0 0.18rem;
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.clinical-stat-blue { background: linear-gradient(135deg, #0f5bff, #083a9c); }
+.clinical-stat-green { background: linear-gradient(135deg, #14b889, #08795d); }
+.clinical-stat-purple { background: linear-gradient(135deg, #8167ff, #4b32b7); }
+
+.clinical-search {
+    max-width: 420px;
+}
+
+.clinical-search .input-group-text,
+.clinical-search .form-control,
+.clinical-form-card .form-control,
+.clinical-form-card .form-select,
+.clinical-form-card .input-group-text {
+    border-color: var(--lf-border);
+    box-shadow: none;
+}
+
+.clinical-search .input-group-text,
+.clinical-form-card .input-group-text {
+    color: var(--lf-muted);
+    background: #f8fbff;
+    font-weight: 800;
+}
+
+.clinical-search .input-group-text {
+    border-radius: 1rem 0 0 1rem;
+}
+
+.clinical-search .form-control {
+    border-radius: 0 1rem 1rem 0;
+}
+
+.patient-option-card {
+    display: grid;
+    gap: 1rem;
+    height: 100%;
+    padding: 1.15rem;
+    background: #f8fbff;
+    border: 1px solid var(--lf-border);
+    border-radius: 1.35rem;
+    transition: 0.18s ease;
+}
+
+.patient-option-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 35px rgba(7, 26, 47, 0.08);
+}
+
+.patient-option-main {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+}
+
+.patient-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 48px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--lf-blue), var(--lf-cyan));
+    border-radius: 16px;
+    box-shadow: 0 12px 24px rgba(15, 91, 255, 0.18);
+}
+
+.patient-avatar-lg {
+    min-width: 58px;
+    height: 58px;
+    border-radius: 20px;
+    font-size: 1.3rem;
+}
+
+.patient-option-meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.patient-option-meta span {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    min-width: 0;
+    color: var(--lf-muted);
+    font-size: 0.84rem;
+    font-weight: 800;
+}
+
+.patient-option-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.patient-summary-card {
+    top: 6.5rem;
+    padding: 1.25rem;
+}
+
+.patient-summary-header {
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--lf-border);
+}
+
+.patient-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.patient-summary-grid.single {
+    grid-template-columns: 1fr;
+}
+
+.patient-summary-grid div {
+    padding: 0.85rem;
+    background: #f8fbff;
+    border: 1px solid var(--lf-border);
+    border-radius: 1rem;
+}
+
+.patient-summary-grid small,
+.patient-summary-grid strong {
+    display: block;
+}
+
+.patient-summary-grid small {
+    color: var(--lf-muted);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+}
+
+.clinical-timeline {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.clinical-timeline-item {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    color: var(--lf-muted);
+    font-weight: 800;
+}
+
+.clinical-timeline-item i {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: var(--lf-muted);
+    background: #eef3f8;
+    border-radius: 12px;
+}
+
+.clinical-timeline-item.active i {
+    color: #fff;
+    background: linear-gradient(135deg, var(--lf-green), #08795d);
+}
+
+.clinical-form-card {
+    padding: clamp(1rem, 2.2vw, 1.5rem);
+}
+
+.form-section {
+    padding: 1.15rem;
+    background: #fff;
+    border: 1px solid var(--lf-border);
+    border-radius: 1.35rem;
+}
+
+.form-section + .form-section {
+    margin-top: 1rem;
+}
+
+.section-heading {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    margin-bottom: 1.1rem;
+}
+
+.section-heading > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--lf-blue), var(--lf-cyan));
+    border-radius: 14px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 900;
+}
+
+.section-heading p {
+    margin: 0.15rem 0 0;
+    color: var(--lf-muted);
+}
+
+.clinical-form-card .form-label {
+    color: #203653;
+    font-weight: 800;
+}
+
+.clinical-form-card .form-control,
+.clinical-form-card .form-select {
+    border-radius: 1rem;
+    padding: 0.78rem 0.95rem;
+}
+
+.clinical-form-card .form-control:focus,
+.clinical-form-card .form-select:focus {
+    border-color: rgba(15, 91, 255, 0.42);
+    box-shadow: 0 0 0 0.25rem rgba(15, 91, 255, 0.12);
+}
+
+.clinical-form-card .input-group .form-control {
+    border-radius: 1rem 0 0 1rem;
+}
+
+.clinical-form-card .input-group .input-group-text {
+    border-radius: 0 1rem 1rem 0;
+}
+
+.clinical-check {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    min-height: 51px;
+    padding: 0.75rem 0.95rem;
+    color: #123052;
+    background: #f8fbff;
+    border: 1px solid var(--lf-border);
+    border-radius: 1rem;
+    font-weight: 800;
+}
+
+.clinical-check.success {
+    color: #08795d;
+    background: rgba(20, 184, 137, 0.08);
+}
+
+.clinical-check.danger {
+    color: #a34700;
+    background: rgba(245, 185, 66, 0.12);
+}
+
+.clinical-check .form-check-input {
+    margin: 0;
+}
+
+.clinical-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--lf-border);
+}
+
+.clinical-tabs {
+    gap: 0.65rem;
+    padding: 0.35rem;
+    margin-bottom: 1rem;
+    background: #edf5ff;
+    border: 1px solid var(--lf-border);
+    border-radius: 1.25rem;
+}
+
+.clinical-tabs .nav-link {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: #37506f;
+    border: 0;
+    border-radius: 1rem;
+    font-weight: 900;
+    padding: 0.8rem 1rem;
+}
+
+.clinical-tabs .nav-link.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--lf-blue), #0741b8);
+    box-shadow: 0 12px 24px rgba(15, 91, 255, 0.18);
+}
+
+.clinical-tab-content {
+    min-height: 520px;
+    padding: 1.15rem;
+    background: #fff;
+    border: 1px solid var(--lf-border);
+    border-radius: 1.35rem;
+}
+
+.dialysis-progress {
+    height: 10px;
+    overflow: hidden;
+    background: #e7eef7;
+    border-radius: 999px;
+}
+
+.dialysis-progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(135deg, var(--lf-green), var(--lf-cyan));
+    border-radius: inherit;
+}
+
+@media (max-width: 1199.98px) {
+    .patient-summary-card {
+        top: auto;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .clinical-hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .clinical-search {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .patient-option-meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .clinical-hero,
+    .clinical-card .card-body,
+    .clinical-form-card,
+    .form-section,
+    .clinical-tab-content {
+        padding: 1rem !important;
+    }
+
+    .clinical-hero-badge {
+        min-width: 100%;
+        min-height: 104px;
+    }
+
+    .patient-option-meta,
+    .patient-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .clinical-tabs .nav-link {
+        width: 100%;
+        justify-content: center;
+    }
+}
