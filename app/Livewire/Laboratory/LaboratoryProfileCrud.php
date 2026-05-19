@@ -3,7 +3,7 @@ namespace App\Livewire\Laboratory;
 use App\Models\Laboratory\LaboratoryProfile;
 use App\Models\Laboratory\LaboratoryTest;
 use Livewire\Component;use Livewire\WithPagination;
-class LaboratoryProfileCrud extends Component{use WithPagination; public string $search=''; public ?int $editingId=null; public string $nombre=''; public ?string $descripcion=null; public bool $estado=true; public array $test_ids=[];
+class LaboratoryProfileCrud extends Component{use WithPagination; protected string $paginationTheme = 'bootstrap'; public string $search=''; public ?int $editingId=null; public string $nombre=''; public ?string $descripcion=null; public bool $estado=true; public array $test_ids=[];
 protected function rules(){return ['nombre'=>'required|max:150|unique:laboratory_profiles,nombre,'.($this->editingId??'NULL').',id','test_ids'=>'required|array|min:1','test_ids.*'=>'exists:laboratory_tests,id'];}
 public function edit($id){$p=LaboratoryProfile::with('tests')->withTrashed()->findOrFail($id);$this->editingId=$id;$this->nombre=$p->nombre;$this->descripcion=$p->descripcion;$this->estado=(bool)$p->estado;$this->test_ids=$p->tests->pluck('id')->all();}
 public function save(){ $this->validate(); $p=LaboratoryProfile::updateOrCreate(['id'=>$this->editingId],['nombre'=>$this->nombre,'descripcion'=>$this->descripcion,'estado'=>$this->estado]);$p->tests()->sync($this->test_ids);$this->reset(['editingId','nombre','descripcion','test_ids']);$this->estado=true; }
