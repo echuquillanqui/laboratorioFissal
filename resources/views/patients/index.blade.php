@@ -68,11 +68,25 @@
                 </form>
             </div>
 
+            <div class="selection-toolbar mb-4">
+                <div class="selection-actions">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllPatients">Marcar todos</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="clearAllPatients">Desmarcar todos</button>
+                    <span class="selection-counter" id="selectedPatientsCounter">0 seleccionados</span>
+                </div>
+                <div class="autocomplete-box">
+                    <label class="form-label mb-1">Búsqueda inteligente</label>
+                    <input type="text" class="form-control" id="patientAutocomplete" placeholder="Escribe nombre, DNI, historia...">
+                    <div class="autocomplete-results" id="patientAutocompleteResults"></div>
+                </div>
+            </div>
+
             <div class="row g-3">
                 @forelse ($patients as $patient)
                     <div class="col-xl-6">
-                        <article class="patient-option-card">
+                        <article class="patient-option-card" id="patient-card-{{ $patient['id'] }}">
                             <div class="patient-option-main">
+                                <input class="form-check-input patient-select-checkbox" type="checkbox" value="{{ $patient['id'] }}">
                                 <div class="patient-avatar"><i class="fa-solid fa-user-injured"></i></div>
                                 <div>
                                     <h3 class="h6 fw-bold mb-1">{{ $patient['nombres_apellidos'] }}</h3>
@@ -80,6 +94,7 @@
                                         <span class="info-chip"><i class="fa-regular fa-id-card me-1"></i>DNI {{ $patient['dni'] }}</span>
                                         <span class="info-chip"><i class="fa-solid fa-file-waveform me-1"></i>{{ $patient['numero_historia'] }}</span>
                                         <span class="credential-pill"><i class="fa-solid fa-hashtag me-1"></i>{{ $patient['codigo_unico'] }}</span>
+                                        <span class="info-chip"><i class="fa-solid fa-shield-heart me-1"></i>{{ $patient['regimen'] ?? 'Sin régimen' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -182,6 +197,12 @@
                                 <label class="form-label">Número sesión</label>
                                 <input class="form-control" type="number" name="numero_sesion" min="0" value="0" required>
                             </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Régimen</label>
+                                <select class="form-select" name="regimen">
+                                    <option value="">Sin especificar</option><option value="SIS">SIS</option><option value="ESSALUD">ESSALUD</option><option value="SALUDPOL">SALUDPOL</option><option value="PARTICULAR">PARTICULAR</option><option value="OTROS">OTROS</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -194,3 +215,70 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const checks = () => Array.from(document.querySelectorAll('.patient-select-checkbox'));
+    const counter = document.getElementById('selectedPatientsCounter');
+
+    const updateCounter = () => {
+        counter.textContent = `${checks().filter((item) => item.checked).length} seleccionados`;
+    };
+
+    document.getElementById('selectAllPatients')?.addEventListener('click', () => {
+        checks().forEach((item) => item.checked = true);
+        updateCounter();
+    });
+
+    document.getElementById('clearAllPatients')?.addEventListener('click', () => {
+        checks().forEach((item) => item.checked = false);
+        updateCounter();
+    });
+
+    checks().forEach((item) => item.addEventListener('change', updateCounter));
+    updateCounter();
+
+    const input = document.getElementById('patientAutocomplete');
+    const results = document.getElementById('patientAutocompleteResults');
+    let timer = null;
+
+    input?.addEventListener('input', () => {
+        clearTimeout(timer);
+        const query = input.value.trim();
+
+        if (query.length < 2) {
+            results.innerHTML = '';
+            return;
+        }
+
+        timer = setTimeout(async () => {
+            const response = await fetch(`{{ route('patients.autocomplete') }}?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+
+            if (!Array.isArray(data) || data.length === 0) {
+                results.innerHTML = '<div class="autocomplete-item">Sin resultados</div>';
+                return;
+            }
+
+            results.innerHTML = data.map((patient) => `
+                <button type="button" class="autocomplete-item" data-patient-id="${patient.id}">
+                    <strong>${patient.nombres_apellidos}</strong><br>
+                    <small>DNI ${patient.dni} · ${patient.numero_historia} · ${patient.codigo_unico}</small>
+                </button>
+            `).join('');
+
+            results.querySelectorAll('.autocomplete-item[data-patient-id]').forEach((item) => {
+                item.addEventListener('click', () => {
+                    const id = item.getAttribute('data-patient-id');
+                    const card = document.getElementById(`patient-card-${id}`);
+                    card?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card?.classList.add('ring-highlight');
+                    setTimeout(() => card?.classList.remove('ring-highlight'), 1600);
+                });
+            });
+        }, 250);
+    });
+});
+</script>
+@endpush

@@ -74,6 +74,16 @@
                         <input class="form-control @error('numero_sesion') is-invalid @enderror" type="number" name="numero_sesion" value="{{ old('numero_sesion', $patient['numero_sesion']) }}" min="0" required>
                         @error('numero_sesion')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Régimen</label>
+                        <select class="form-select @error('regimen') is-invalid @enderror" name="regimen">
+                            <option value="">Sin especificar</option>
+                            @foreach (['SIS', 'ESSALUD', 'SALUDPOL', 'PARTICULAR', 'OTROS'] as $regimen)
+                                <option value="{{ $regimen }}" @selected(old('regimen', $patient['regimen'] ?? '') === $regimen)>{{ $regimen }}</option>
+                            @endforeach
+                        </select>
+                        @error('regimen')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
                 </div>
             </div>
 

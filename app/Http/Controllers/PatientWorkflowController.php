@@ -83,6 +83,29 @@ class PatientWorkflowController extends Controller
         ]);
     }
 
+    public function autocomplete(Request $request)
+    {
+        $search = trim((string) $request->query('q', ''));
+
+        if ($search === '' || mb_strlen($search) < 2) {
+            return response()->json([]);
+        }
+
+        $patients = DB::table('patients')
+            ->select('id', 'nombres_apellidos', 'dni', 'codigo_unico', 'numero_historia')
+            ->where(function ($query) use ($search) {
+                $query->where('nombres_apellidos', 'like', "%{$search}%")
+                    ->orWhere('dni', 'like', "%{$search}%")
+                    ->orWhere('codigo_unico', 'like', "%{$search}%")
+                    ->orWhere('numero_historia', 'like', "%{$search}%");
+            })
+            ->orderBy('nombres_apellidos')
+            ->limit(10)
+            ->get();
+
+        return response()->json($patients);
+    }
+
     public function createDialysis(?int $patient = null)
     {
         return view('dialysis.create', [
@@ -97,7 +120,7 @@ class PatientWorkflowController extends Controller
 
         try {
             return DB::table('patients')
-                ->select('patients.id', 'nombres_apellidos', 'dni', 'edad', 'sexo', 'codigo_unico', 'numero_historia', 'numero_sesion', 'fecha_ingreso')
+                ->select('patients.id', 'nombres_apellidos', 'dni', 'edad', 'sexo', 'codigo_unico', 'numero_historia', 'numero_sesion', 'fecha_ingreso', 'regimen')
                 ->selectSub(fn ($query) => $query
                     ->from('consults')
                     ->selectRaw('count(*)')
@@ -131,7 +154,7 @@ class PatientWorkflowController extends Controller
         if ($id !== null) {
             try {
                 $patient = DB::table('patients')
-                    ->select('id', 'nombres_apellidos', 'dni', 'edad', 'sexo', 'codigo_unico', 'numero_historia', 'numero_sesion', 'fecha_ingreso')
+                    ->select('id', 'nombres_apellidos', 'dni', 'edad', 'sexo', 'codigo_unico', 'numero_historia', 'numero_sesion', 'fecha_ingreso', 'regimen')
                     ->where('id', $id)
                     ->first();
 
@@ -156,6 +179,7 @@ class PatientWorkflowController extends Controller
             'sexo' => ['required', Rule::in(['M', 'F'])],
             'codigo_unico' => ['required', 'string', 'max:7', Rule::unique('patients', 'codigo_unico')->ignore($patient)],
             'numero_sesion' => ['required', 'integer', 'min:0'],
+            'regimen' => ['nullable', Rule::in(['SIS', 'ESSALUD', 'SALUDPOL', 'PARTICULAR', 'OTROS'])],
             'numero_historia' => [$patient === null ? 'nullable' : 'required', 'string', 'max:255', Rule::unique('patients', 'numero_historia')->ignore($patient)],
         ]);
     }
@@ -194,6 +218,7 @@ class PatientWorkflowController extends Controller
             'codigo_unico' => '',
             'numero_sesion' => 0,
             'numero_historia' => '',
+            'regimen' => null,
         ];
     }
 
@@ -236,6 +261,7 @@ class PatientWorkflowController extends Controller
                 'codigo_unico' => 'HD-0001',
                 'numero_historia' => 'HC-000001',
                 'numero_sesion' => 4,
+                'regimen' => 'SIS',
                 'fecha_ingreso' => '2026-01-05',
                 'consultas_count' => 0,
                 'dialisis_count' => 0,
@@ -250,6 +276,7 @@ class PatientWorkflowController extends Controller
                 'codigo_unico' => 'HD-0002',
                 'numero_historia' => 'HC-000002',
                 'numero_sesion' => 2,
+                'regimen' => 'ESSALUD',
                 'fecha_ingreso' => '2026-01-08',
                 'consultas_count' => 1,
                 'dialisis_count' => 0,

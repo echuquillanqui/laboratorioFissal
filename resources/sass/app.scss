@@ -1214,3 +1214,19 @@ body {
         justify-content: center;
     }
 }
+
+.selection-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1rem;
+    align-items: end;
+}
+.selection-actions { display:flex; gap:.6rem; align-items:center; flex-wrap: wrap; }
+.selection-counter { font-weight: 700; color: var(--lf-navy); }
+.autocomplete-box { position: relative; }
+.autocomplete-results { position: absolute; z-index: 9; width: 100%; background: #fff; border: 1px solid var(--lf-border); border-radius: .75rem; margin-top: .35rem; max-height: 280px; overflow: auto; box-shadow: 0 20px 30px rgba(17,40,72,.15); }
+.autocomplete-item { display:block; width:100%; text-align:left; padding:.65rem .75rem; border:0; background:transparent; }
+.autocomplete-item:hover { background: #f1f6ff; }
+.patient-select-checkbox { margin-right: .6rem; margin-top: .4rem; }
+.ring-highlight { box-shadow: 0 0 0 3px rgba(15,91,255,.35), 0 20px 32px rgba(11,26,54,.14); transition: box-shadow .3s ease; }
+@media (max-width: 991px) { .selection-toolbar { grid-template-columns: 1fr; } }

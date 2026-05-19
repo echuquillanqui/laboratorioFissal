@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pacientes/{patient}/editar', [PatientWorkflowController::class, 'edit'])->name('patients.edit');
     Route::put('/pacientes/{patient}', [PatientWorkflowController::class, 'update'])->name('patients.update');
     Route::delete('/pacientes/{patient}', [PatientWorkflowController::class, 'destroy'])->name('patients.destroy');
+    Route::get('/pacientes/autocomplete', [PatientWorkflowController::class, 'autocomplete'])->name('patients.autocomplete');
     Route::get('/consultas/generar', [PatientWorkflowController::class, 'createConsult'])->name('consults.create');
     Route::get('/pacientes/{patient}/consultas/generar', [PatientWorkflowController::class, 'createConsult'])->name('patients.consults.create');
     Route::get('/dialisis/generar', [PatientWorkflowController::class, 'createDialysis'])->name('dialysis.create');
