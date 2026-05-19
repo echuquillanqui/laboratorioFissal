@@ -37,7 +37,7 @@
                     </div>
                     <div class="col-md-6 col-lg-3">
                         <label class="form-label">Historia clínica</label>
-                        <input class="form-control @error('numero_historia') is-invalid @enderror" name="numero_historia" value="{{ old('numero_historia', $patient['numero_historia']) }}" required>
+                        <input class="form-control @error('numero_historia') is-invalid @enderror" name="numero_historia" value="{{ old('numero_historia', $patient['numero_historia']) }}" {{ $isEditing ? 'required' : 'readonly' }} placeholder="{{ $isEditing ? '' : 'Se genera automáticamente al registrar' }}">
                         @error('numero_historia')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6 col-lg-3">

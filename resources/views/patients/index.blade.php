@@ -9,9 +9,9 @@
             <p class="text-muted mb-0">Gestiona pacientes y abre los flujos clínicos desde la ficha de cada paciente.</p>
         </div>
         <div class="clinical-hero-actions">
-            <a href="{{ route('patients.create') }}" class="btn btn-primary">
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#patientCreateModal">
                 <i class="fa-solid fa-user-plus me-2"></i>Agregar paciente
-            </a>
+            </button>
         </div>
     </section>
 
@@ -137,4 +137,60 @@
         </div>
     </div>
 </div>
+
+
+    <div class="modal fade" id="patientCreateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('patients.store') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Registrar paciente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Nombres y apellidos</label>
+                                <input class="form-control" name="nombres_apellidos" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">DNI</label>
+                                <input class="form-control" name="dni" maxlength="8" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Historia clínica</label>
+                                <input class="form-control" value="Se genera automáticamente" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Código único</label>
+                                <input class="form-control" name="codigo_unico" maxlength="7" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Fecha ingreso</label>
+                                <input class="form-control" type="date" name="fecha_ingreso" value="{{ now()->toDateString() }}" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Edad</label>
+                                <input class="form-control" type="number" name="edad" min="0" max="120" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Sexo</label>
+                                <select class="form-select" name="sexo" required><option value="F">F</option><option value="M">M</option></select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Número sesión</label>
+                                <input class="form-control" type="number" name="numero_sesion" min="0" value="0" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-primary" type="submit">Registrar paciente</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection

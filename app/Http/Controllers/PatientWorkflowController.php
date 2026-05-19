@@ -30,6 +30,7 @@ class PatientWorkflowController extends Controller
     public function store(Request $request): RedirectResponse
     {
         DB::table('patients')->insert(array_merge($this->validatedPatient($request), [
+            'numero_historia' => $this->nextClinicalHistoryNumber(),
             'created_at' => now(),
             'updated_at' => now(),
         ]));
@@ -113,7 +114,8 @@ class PatientWorkflowController extends Controller
                             ->orWhere('codigo_unico', 'like', "%{$search}%");
                     });
                 })
-                ->orderBy('nombres_apellidos')
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
                 ->paginate($perPage)
                 ->withQueryString()
                 ->through(fn ($patient) => array_merge((array) $patient, [
@@ -154,8 +156,25 @@ class PatientWorkflowController extends Controller
             'sexo' => ['required', Rule::in(['M', 'F'])],
             'codigo_unico' => ['required', 'string', 'max:7', Rule::unique('patients', 'codigo_unico')->ignore($patient)],
             'numero_sesion' => ['required', 'integer', 'min:0'],
-            'numero_historia' => ['required', 'string', 'max:255', Rule::unique('patients', 'numero_historia')->ignore($patient)],
+            'numero_historia' => [$patient === null ? 'nullable' : 'required', 'string', 'max:255', Rule::unique('patients', 'numero_historia')->ignore($patient)],
         ]);
+    }
+
+
+
+    private function nextClinicalHistoryNumber(): string
+    {
+        $lastPatient = DB::table('patients')
+            ->select('numero_historia')
+            ->where('numero_historia', 'like', 'HC-%')
+            ->orderByDesc('id')
+            ->first();
+
+        if ($lastPatient === null || ! preg_match('/^HC-(\d{6})$/', (string) $lastPatient->numero_historia, $matches)) {
+            return 'HC-000001';
+        }
+
+        return 'HC-'.str_pad((string) (((int) $matches[1]) + 1), 6, '0', STR_PAD_LEFT);
     }
 
     private function hasClinicalRecords(int $patient): bool
@@ -180,7 +199,17 @@ class PatientWorkflowController extends Controller
 
     private function samplePatientsPaginator(Request $request, int $perPage): LengthAwarePaginator
     {
-        $patients = collect($this->samplePatients());
+        $search = trim((string) $request->query('buscar', ''));
+
+        $patients = collect($this->samplePatients())
+            ->when($search !== '', fn ($items) => $items->filter(function ($patient) use ($search) {
+                return str_contains(mb_strtolower($patient['nombres_apellidos']), mb_strtolower($search))
+                    || str_contains($patient['dni'], $search)
+                    || str_contains($patient['numero_historia'], $search)
+                    || str_contains(mb_strtolower($patient['codigo_unico']), mb_strtolower($search));
+            }))
+            ->sortByDesc('id')
+            ->values();
         $page = Paginator::resolveCurrentPage();
 
         return new Paginator(
