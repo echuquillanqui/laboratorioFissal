@@ -58,6 +58,24 @@ class LaboratoryTestCrud extends Component
 
     public function addOption(): void { $this->options[] = ['valor' => '', 'etiqueta' => '']; }
     public function removeOption(int $index): void { unset($this->options[$index]); $this->options = array_values($this->options); }
+    public function applyOptionPreset(string $preset): void
+    {
+        $catalog = [
+            'grupo_sanguineo' => ['A', 'B', 'O', 'AB'],
+            'factor_rh' => ['POSITIVO', 'NEGATIVO'],
+            'positivo_negativo' => ['POSITIVO', 'NEGATIVO'],
+            'reactivo_no_reactivo' => ['REACTIVO', 'NO REACTIVO'],
+        ];
+
+        if (!array_key_exists($preset, $catalog)) {
+            return;
+        }
+
+        $this->options = collect($catalog[$preset])
+            ->map(fn(string $option) => ['valor' => $option, 'etiqueta' => $option])
+            ->values()
+            ->all();
+    }
 
     public function edit(int $id): void
     {
