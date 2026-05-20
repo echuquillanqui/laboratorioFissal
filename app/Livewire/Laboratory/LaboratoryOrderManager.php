@@ -28,6 +28,12 @@ class LaboratoryOrderManager extends Component
     public ?int $editOrderId = null;
     public ?string $editEstado = null;
     public ?string $editObservacion = null;
+    public ?int $editPatientId = null;
+    public array $editTestIds = [];
+
+    public bool $showStatusModal = false;
+    public ?int $statusOrderId = null;
+    public ?string $statusEstado = null;
 
     public function updatedOrderSearch(): void
     {
@@ -53,31 +59,89 @@ class LaboratoryOrderManager extends Component
 
     public function startEdit(int $id): void
     {
-        $order = LaboratoryOrder::findOrFail($id);
+        $order = LaboratoryOrder::with('items')->findOrFail($id);
         $this->editOrderId = $order->id;
         $this->editEstado = $order->estado;
         $this->editObservacion = $order->observacion;
+        $this->editPatientId = $order->patient_id;
+        $this->editTestIds = $order->items->pluck('laboratory_test_id')->unique()->map(fn ($testId) => (string) $testId)->values()->all();
+    }
+
+    public function removeEditItem(int $testId): void
+    {
+        $this->editTestIds = collect($this->editTestIds)
+            ->reject(fn ($id) => (int) $id === $testId)
+            ->values()
+            ->all();
     }
 
     public function cancelEdit(): void
     {
-        $this->reset(['editOrderId', 'editEstado', 'editObservacion']);
+        $this->reset(['editOrderId', 'editEstado', 'editObservacion', 'editPatientId', 'editTestIds']);
     }
 
     public function updateOrder(): void
     {
         $this->validate([
             'editOrderId' => 'required|exists:laboratory_orders,id',
+            'editPatientId' => 'required|exists:patients,id',
             'editEstado' => 'required|string',
             'editObservacion' => 'nullable|string|max:1000',
+            'editTestIds' => 'array|min:1',
+            'editTestIds.*' => 'exists:laboratory_tests,id',
         ]);
 
-        LaboratoryOrder::findOrFail($this->editOrderId)->update([
+        $order = LaboratoryOrder::with('items')->findOrFail($this->editOrderId);
+
+        $order->update([
+            'patient_id' => $this->editPatientId,
             'estado' => $this->editEstado,
             'observacion' => $this->editObservacion,
         ]);
 
+        $currentIds = $order->items->pluck('laboratory_test_id')->all();
+        $targetIds = collect($this->editTestIds)->map(fn ($id) => (int) $id)->unique()->values();
+
+        $order->items()->whereIn('laboratory_test_id', array_diff($currentIds, $targetIds->all()))->delete();
+
+        $existing = $order->items()->pluck('laboratory_test_id')->all();
+        $toAdd = $targetIds->diff($existing);
+
+        if ($toAdd->isNotEmpty()) {
+            $order->items()->createMany($toAdd->map(fn ($id) => [
+                'laboratory_test_id' => $id,
+                'origen' => 'individual',
+            ])->all());
+        }
+
         $this->cancelEdit();
+    }
+
+    public function openStatusModal(int $id): void
+    {
+        $order = LaboratoryOrder::findOrFail($id);
+        $this->statusOrderId = $order->id;
+        $this->statusEstado = $order->estado;
+        $this->showStatusModal = true;
+    }
+
+    public function closeStatusModal(): void
+    {
+        $this->reset(['showStatusModal', 'statusOrderId', 'statusEstado']);
+    }
+
+    public function saveStatus(): void
+    {
+        $this->validate([
+            'statusOrderId' => 'required|exists:laboratory_orders,id',
+            'statusEstado' => 'required|string',
+        ]);
+
+        LaboratoryOrder::findOrFail($this->statusOrderId)->update([
+            'estado' => $this->statusEstado,
+        ]);
+
+        $this->closeStatusModal();
     }
 
     public function deleteOrder(int $id): void
