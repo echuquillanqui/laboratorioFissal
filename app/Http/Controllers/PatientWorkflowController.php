@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -12,6 +13,53 @@ use Throwable;
 
 class PatientWorkflowController extends Controller
 {
+    public function exportReports(Request $request): Response
+    {
+        $mode = $request->query('mode', 'workbook');
+
+        $consults = DB::table('consults')
+            ->join('patients', 'patients.id', '=', 'consults.id_paciente')
+            ->select(
+                'consults.id',
+                'patients.numero_historia',
+                'patients.nombres_apellidos',
+                'patients.dni',
+                'consults.procedencia',
+                'consults.diagnostico_renal',
+                'consults.etiologia',
+                'consults.acceso_vascular',
+                'consults.indicacion_hd',
+                'consults.destino',
+                'consults.created_at'
+            )
+            ->orderByDesc('consults.created_at')
+            ->get();
+
+        $dialysis = DB::table('dialysis')
+            ->join('patients', 'patients.id', '=', 'dialysis.id_paciente')
+            ->select(
+                'dialysis.id',
+                'patients.numero_historia',
+                'patients.nombres_apellidos',
+                'patients.dni',
+                'dialysis.numero_sesion',
+                'dialysis.diagnostico_renal',
+                'dialysis.etiologia',
+                'dialysis.acceso_vascular',
+                'dialysis.indicacion_hd',
+                'dialysis.destino_final',
+                'dialysis.created_at'
+            )
+            ->orderByDesc('dialysis.created_at')
+            ->get();
+
+        if ($mode === 'separate') {
+            return $this->exportSeparateCsvZip($consults->all(), $dialysis->all());
+        }
+
+        return $this->exportWorkbookXml($consults->all(), $dialysis->all());
+    }
+
     public function index(Request $request)
     {
         return view('patients.index', [
@@ -220,6 +268,130 @@ class PatientWorkflowController extends Controller
             'numero_historia' => '',
             'regimen' => null,
         ];
+    }
+
+    private function exportWorkbookXml(array $consults, array $dialysis): Response
+    {
+        $headersConsults = ['ID', 'Historia clínica', 'Paciente', 'DNI', 'Procedencia', 'Diagnóstico renal', 'Etiología', 'Acceso vascular', 'Indicación HD', 'Destino', 'Fecha'];
+        $headersDialysis = ['ID', 'Historia clínica', 'Paciente', 'DNI', 'N° sesión', 'Diagnóstico renal', 'Etiología', 'Acceso vascular', 'Indicación HD', 'Destino final', 'Fecha'];
+
+        $xml = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>'
+            .'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
+            .$this->xmlWorksheet('Consultas', $headersConsults, array_map(fn ($row) => [
+                $row->id,
+                $row->numero_historia,
+                $row->nombres_apellidos,
+                $row->dni,
+                $row->procedencia,
+                $row->diagnostico_renal,
+                $row->etiologia,
+                $row->acceso_vascular,
+                $row->indicacion_hd,
+                $row->destino,
+                $row->created_at,
+            ], $consults))
+            .$this->xmlWorksheet('Hemodialisis', $headersDialysis, array_map(fn ($row) => [
+                $row->id,
+                $row->numero_historia,
+                $row->nombres_apellidos,
+                $row->dni,
+                $row->numero_sesion,
+                $row->diagnostico_renal,
+                $row->etiologia,
+                $row->acceso_vascular,
+                $row->indicacion_hd,
+                $row->destino_final,
+                $row->created_at,
+            ], $dialysis))
+            .'</Workbook>';
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="reportes_consulta_hemodialisis.xml"',
+        ]);
+    }
+
+    private function xmlWorksheet(string $name, array $headers, array $rows): string
+    {
+        $sheet = '<Worksheet ss:Name="'.$this->xmlEscape($name).'"><Table>';
+        $sheet .= '<Row>';
+        foreach ($headers as $header) {
+            $sheet .= '<Cell><Data ss:Type="String">'.$this->xmlEscape($header).'</Data></Cell>';
+        }
+        $sheet .= '</Row>';
+
+        foreach ($rows as $row) {
+            $sheet .= '<Row>';
+            foreach ($row as $value) {
+                $sheet .= '<Cell><Data ss:Type="String">'.$this->xmlEscape((string) $value).'</Data></Cell>';
+            }
+            $sheet .= '</Row>';
+        }
+
+        return $sheet.'</Table></Worksheet>';
+    }
+
+    private function exportSeparateCsvZip(array $consults, array $dialysis): Response
+    {
+        $zipPath = tempnam(sys_get_temp_dir(), 'reportes_');
+        $zip = new \ZipArchive();
+        $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        $zip->addFromString('consultas.csv', $this->toCsv([
+            ['ID', 'Historia clínica', 'Paciente', 'DNI', 'Procedencia', 'Diagnóstico renal', 'Etiología', 'Acceso vascular', 'Indicación HD', 'Destino', 'Fecha'],
+            ...array_map(fn ($row) => [
+                $row->id,
+                $row->numero_historia,
+                $row->nombres_apellidos,
+                $row->dni,
+                $row->procedencia,
+                $row->diagnostico_renal,
+                $row->etiologia,
+                $row->acceso_vascular,
+                $row->indicacion_hd,
+                $row->destino,
+                $row->created_at,
+            ], $consults),
+        ]));
+
+        $zip->addFromString('hemodialisis.csv', $this->toCsv([
+            ['ID', 'Historia clínica', 'Paciente', 'DNI', 'N° sesión', 'Diagnóstico renal', 'Etiología', 'Acceso vascular', 'Indicación HD', 'Destino final', 'Fecha'],
+            ...array_map(fn ($row) => [
+                $row->id,
+                $row->numero_historia,
+                $row->nombres_apellidos,
+                $row->dni,
+                $row->numero_sesion,
+                $row->diagnostico_renal,
+                $row->etiologia,
+                $row->acceso_vascular,
+                $row->indicacion_hd,
+                $row->destino_final,
+                $row->created_at,
+            ], $dialysis),
+        ]));
+
+        $zip->close();
+
+        return response()->download($zipPath, 'reportes_consulta_hemodialisis.zip')->deleteFileAfterSend(true);
+    }
+
+    private function toCsv(array $rows): string
+    {
+        $stream = fopen('php://temp', 'r+');
+        foreach ($rows as $row) {
+            fputcsv($stream, $row);
+        }
+        rewind($stream);
+        $csv = stream_get_contents($stream) ?: '';
+        fclose($stream);
+
+        return $csv;
+    }
+
+    private function xmlEscape(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_XML1, 'UTF-8');
     }
 
     private function samplePatientsPaginator(Request $request, int $perPage): LengthAwarePaginator

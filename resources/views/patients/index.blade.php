@@ -73,6 +73,12 @@
                     <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllPatients">Marcar todos</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="clearAllPatients">Desmarcar todos</button>
                     <span class="selection-counter" id="selectedPatientsCounter">0 seleccionados</span>
+                    <a href="{{ route('reports.export', ['mode' => 'workbook']) }}" class="btn btn-sm btn-success">
+                        <i class="fa-solid fa-file-excel me-1"></i>Reporte Excel (2 pestañas)
+                    </a>
+                    <a href="{{ route('reports.export', ['mode' => 'separate']) }}" class="btn btn-sm btn-outline-success">
+                        <i class="fa-solid fa-file-zipper me-1"></i>Reportes separados (ZIP)
+                    </a>
                 </div>
                 <div class="autocomplete-box">
                     <label class="form-label mb-1">Búsqueda inteligente</label>

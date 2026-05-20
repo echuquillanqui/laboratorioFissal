@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pacientes/{patient}/consultas/generar', [PatientWorkflowController::class, 'createConsult'])->name('patients.consults.create');
     Route::get('/dialisis/generar', [PatientWorkflowController::class, 'createDialysis'])->name('dialysis.create');
     Route::get('/pacientes/{patient}/dialisis/generar', [PatientWorkflowController::class, 'createDialysis'])->name('patients.dialysis.create');
+    Route::get('/reportes/exportar', [PatientWorkflowController::class, 'exportReports'])->name('reports.export');
 });
 
 use App\Livewire\Laboratory\LaboratoryTestCrud;
