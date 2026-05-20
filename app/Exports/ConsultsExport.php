@@ -20,8 +20,17 @@ class ConsultsExport implements FromCollection, WithHeadings
             $row->procedencia,
             $row->diagnostico_renal,
             $row->etiologia,
+            $row->hd_cronica_previa ? 'Sí' : 'No',
             $row->acceso_vascular,
             $row->indicacion_hd,
+            $row->urea_inicial,
+            $row->creatinina_inicial,
+            $row->potasio_inicial,
+            $row->hemoglobina,
+            $row->albumina,
+            $row->vasopresores ? 'Sí' : 'No',
+            $row->ventilacion_mecanica ? 'Sí' : 'No',
+            $row->complicacion_hd,
             $row->destino,
             $row->created_at,
         ]);
@@ -29,6 +38,6 @@ class ConsultsExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['ID', 'Historia clínica', 'Paciente', 'DNI', 'Procedencia', 'Diagnóstico renal', 'Etiología', 'Acceso vascular', 'Indicación HD', 'Destino', 'Fecha'];
+        return ['ID', 'Historia clínica', 'Paciente', 'DNI', 'Procedencia', 'Diagnóstico renal', 'Etiología', 'HD crónica previa', 'Acceso vascular', 'Indicación HD', 'Urea inicial', 'Creatinina inicial', 'Potasio inicial', 'Hemoglobina', 'Albúmina', 'Vasopresores', 'Ventilación mecánica', 'Complicación HD', 'Destino', 'Fecha'];
     }
 }
