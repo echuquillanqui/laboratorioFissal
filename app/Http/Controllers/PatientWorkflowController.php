@@ -204,6 +204,38 @@ class PatientWorkflowController extends Controller
         return response()->json($patients);
     }
 
+
+    public function search(Request $request)
+    {
+        $search = trim((string) $request->query('q', ''));
+        $page = max(1, (int) $request->query('page', 1));
+
+        $query = DB::table('patients')
+            ->select('id', 'nombres_apellidos', 'dni', 'codigo_unico', 'numero_historia', 'sexo', 'edad', 'fecha_nacimiento', 'direccion', 'telefono')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('nombres_apellidos', 'like', "%{$search}%")
+                        ->orWhere('dni', 'like', "%{$search}%")
+                        ->orWhere('codigo_unico', 'like', "%{$search}%")
+                        ->orWhere('numero_historia', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('nombres_apellidos');
+
+        $patients = $query->paginate(10, ['*'], 'page', $page);
+
+        return response()->json([
+            'results' => collect($patients->items())->map(fn ($patient) => [
+                'id' => $patient->id,
+                'text' => "{$patient->numero_historia} · {$patient->dni} · {$patient->nombres_apellidos}",
+                'dni' => $patient->dni,
+                'numero_historia' => $patient->numero_historia,
+                'nombres_apellidos' => $patient->nombres_apellidos,
+            ]),
+            'pagination' => ['more' => $patients->hasMorePages()],
+        ]);
+    }
+
     public function createDialysis(?int $patient = null)
     {
         return view('dialysis.create', [
@@ -227,6 +259,10 @@ class PatientWorkflowController extends Controller
                     ->from('dialysis')
                     ->selectRaw('count(*)')
                     ->whereColumn('dialysis.id_paciente', 'patients.id'), 'dialisis_count')
+                ->selectSub(fn ($query) => $query
+                    ->from('hemodialysis_sessions')
+                    ->selectRaw('count(*)')
+                    ->whereColumn('hemodialysis_sessions.patient_id', 'patients.id'), 'hemodialisis_count')
                 ->when($search !== '', function ($query) use ($search) {
                     $query->where(function ($query) use ($search) {
                         $query->where('nombres_apellidos', 'like', "%{$search}%")
@@ -240,7 +276,7 @@ class PatientWorkflowController extends Controller
                 ->paginate($perPage)
                 ->withQueryString()
                 ->through(fn ($patient) => array_merge((array) $patient, [
-                    'can_delete' => ((int) $patient->consultas_count === 0 && (int) $patient->dialisis_count === 0),
+                    'can_delete' => ((int) $patient->consultas_count === 0 && (int) $patient->dialisis_count === 0 && (int) ($patient->hemodialisis_count ?? 0) === 0),
                 ]));
         } catch (Throwable) {
             return $this->samplePatientsPaginator($request, $perPage);
@@ -252,7 +288,7 @@ class PatientWorkflowController extends Controller
         if ($id !== null) {
             try {
                 $patient = DB::table('patients')
-                    ->select('id', 'nombres_apellidos', 'dni', 'edad', 'sexo', 'codigo_unico', 'numero_historia', 'numero_sesion', 'fecha_ingreso', 'regimen')
+                    ->select('id', 'nombres_apellidos', 'dni', 'edad', 'sexo', 'codigo_unico', 'numero_historia', 'numero_sesion', 'fecha_ingreso', 'fecha_nacimiento', 'direccion', 'telefono', 'regimen')
                     ->where('id', $id)
                     ->first();
 
@@ -273,11 +309,14 @@ class PatientWorkflowController extends Controller
             'nombres_apellidos' => ['required', 'string', 'max:255'],
             'dni' => ['required', 'digits:8', Rule::unique('patients', 'dni')->ignore($patient)],
             'fecha_ingreso' => ['required', 'date'],
+            'fecha_nacimiento' => ['nullable', 'date'],
             'edad' => ['required', 'integer', 'min:0', 'max:120'],
             'sexo' => ['required', Rule::in(['M', 'F'])],
             'codigo_unico' => ['required', 'string', 'max:7', Rule::unique('patients', 'codigo_unico')->ignore($patient)],
             'numero_sesion' => ['required', 'integer', 'min:0'],
             'regimen' => ['nullable', Rule::in(['SIS', 'ESSALUD', 'SALUDPOL', 'PARTICULAR', 'OTROS'])],
+            'direccion' => ['nullable', 'string', 'max:255'],
+            'telefono' => ['nullable', 'string', 'max:30'],
             'numero_historia' => [$patient === null ? 'nullable' : 'required', 'string', 'max:255', Rule::unique('patients', 'numero_historia')->ignore($patient)],
         ]);
     }
@@ -302,7 +341,12 @@ class PatientWorkflowController extends Controller
     private function hasClinicalRecords(int $patient): bool
     {
         return DB::table('consults')->where('id_paciente', $patient)->exists()
-            || DB::table('dialysis')->where('id_paciente', $patient)->exists();
+            || DB::table('dialysis')->where('id_paciente', $patient)->exists()
+            || DB::table('hemodialysis_sessions')->where('patient_id', $patient)->exists()
+            || DB::table('hemodialysis_admissions')->where('patient_id', $patient)->exists()
+            || DB::table('hemodialysis_medical_evaluations')->where('patient_id', $patient)->exists()
+            || DB::table('hemodialysis_nursing_notes')->where('patient_id', $patient)->exists()
+            || DB::table('hemodialysis_laboratory_monitors')->where('patient_id', $patient)->exists();
     }
 
     private function emptyPatient(): array
@@ -311,12 +355,15 @@ class PatientWorkflowController extends Controller
             'nombres_apellidos' => '',
             'dni' => '',
             'fecha_ingreso' => now()->toDateString(),
+            'fecha_nacimiento' => null,
             'edad' => '',
             'sexo' => 'F',
             'codigo_unico' => '',
             'numero_sesion' => 0,
             'numero_historia' => '',
             'regimen' => null,
+            'direccion' => '',
+            'telefono' => '',
         ];
     }
 

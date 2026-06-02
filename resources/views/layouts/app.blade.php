@@ -18,6 +18,7 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @livewireStyles
+    @stack('styles')
 </head>
 <body class="app-shell">
     <div id="app" class="min-vh-100 d-flex flex-column">
@@ -59,6 +60,18 @@
                                     <li><a class="dropdown-item" href="{{ route('laboratory.orders.index') }}">Órdenes de laboratorio</a></li>
                                     <li><a class="dropdown-item" href="{{ route('laboratory.mass-orders.index') }}">Generar órdenes masivas</a></li>
                                     <li><a class="dropdown-item" href="{{ route('laboratory.results.index') }}">Resultados</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ request()->routeIs('hemodialysis.*') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Historias Clínicas
+                                </a>
+                                <ul class="dropdown-menu shadow border-0 rounded-4 mt-2">
+                                    <li><a class="dropdown-item" href="{{ route('hemodialysis.admissions.index') }}">Ingreso a Hemodiálisis</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('hemodialysis.evaluations.index') }}">Evaluación médica</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('hemodialysis.sessions.index') }}">Ficha de Hemodiálisis</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('hemodialysis.nursing-notes.index') }}">Notas de enfermería</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('hemodialysis.laboratory-monitors.index') }}">Monitoreo laboratorio</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">

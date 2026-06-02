@@ -62,6 +62,11 @@
                         @error('edad')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Fecha de nacimiento</label>
+                        <input class="form-control @error('fecha_nacimiento') is-invalid @enderror" type="date" name="fecha_nacimiento" value="{{ old('fecha_nacimiento', $patient['fecha_nacimiento'] ?? '') }}">
+                        @error('fecha_nacimiento')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6 col-lg-3">
                         <label class="form-label">Sexo</label>
                         <select class="form-select @error('sexo') is-invalid @enderror" name="sexo" required>
                             <option value="F" @selected(old('sexo', $patient['sexo']) === 'F')>F</option>
@@ -83,6 +88,16 @@
                             @endforeach
                         </select>
                         @error('regimen')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label">Teléfono</label>
+                        <input class="form-control @error('telefono') is-invalid @enderror" name="telefono" value="{{ old('telefono', $patient['telefono'] ?? '') }}" maxlength="30">
+                        @error('telefono')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-12 col-lg-8">
+                        <label class="form-label">Dirección</label>
+                        <input class="form-control @error('direccion') is-invalid @enderror" name="direccion" value="{{ old('direccion', $patient['direccion'] ?? '') }}">
+                        @error('direccion')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
             </div>
