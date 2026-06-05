@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('hemodialysis_laboratory_monitors', function (Blueprint $table) {
+        Schema::create('laboratory_monitors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
             $table->foreignId('hemodialysis_session_id')->nullable()->constrained('hemodialysis_sessions')->nullOnDelete();
@@ -22,9 +22,9 @@ return new class extends Migration
             $table->index(['patient_id', 'fecha_muestra']);
         });
 
-        Schema::create('hemodialysis_laboratory_monitor_results', function (Blueprint $table) {
+        Schema::create('laboratory_results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hemodialysis_laboratory_monitor_id')->constrained('hemodialysis_laboratory_monitors')->cascadeOnDelete();
+            $table->foreignId('laboratory_monitor_id')->constrained('laboratory_monitors')->cascadeOnDelete();
             $table->foreignId('laboratory_test_id')->nullable()->constrained('laboratory_tests')->nullOnDelete();
             $table->string('nombre_prueba', 150);
             $table->string('valor', 120)->nullable();
@@ -37,7 +37,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('hemodialysis_laboratory_monitor_results');
-        Schema::dropIfExists('hemodialysis_laboratory_monitors');
+        Schema::dropIfExists('laboratory_results');
+        Schema::dropIfExists('laboratory_monitors');
     }
 };

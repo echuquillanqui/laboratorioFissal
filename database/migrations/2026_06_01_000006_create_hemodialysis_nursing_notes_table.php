@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('hemodialysis_nursing_notes', function (Blueprint $table) {
+        Schema::create('nursings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
             $table->foreignId('hemodialysis_session_id')->nullable()->constrained('hemodialysis_sessions')->nullOnDelete();
