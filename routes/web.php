@@ -56,6 +56,8 @@ Route::middleware('auth')->name('laboratory.')->group(function () {
 
 Route::middleware('auth')->prefix('historias-clinicas/hemodialisis')->name('hemodialysis.')->group(function () {
     Route::get('/ingresos', HemodialysisAdmissionCrud::class)->name('admissions.index');
+    Route::get('/ingresos/nuevo', HemodialysisAdmissionCrud::class)->name('admissions.create');
+    Route::get('/ingresos/{record}/editar', HemodialysisAdmissionCrud::class)->name('admissions.edit');
     Route::get('/evaluaciones-medicas', HemodialysisMedicalEvaluationCrud::class)->name('evaluations.index');
     Route::get('/fichas', HemodialysisSessionCrud::class)->name('sessions.index');
     Route::get('/notas-enfermeria', HemodialysisNursingNoteCrud::class)->name('nursing-notes.index');
