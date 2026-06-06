@@ -54,16 +54,16 @@ Route::middleware('auth')->name('laboratory.')->group(function () {
     Route::get('/ordenes-masivas', LaboratoryMassOrderManager::class)->name('mass-orders.index');
 });
 
-Route::middleware(['auth', 'permission:ver_hd'])->prefix('historias-clinicas/hemodialisis')->name('hemodialysis.')->group(function () {
+Route::middleware('auth')->prefix('historias-clinicas/hemodialisis')->name('hemodialysis.')->group(function () {
     Route::get('/ingresos', HemodialysisAdmissionCrud::class)->name('admissions.index');
     Route::get('/evaluaciones-medicas', HemodialysisMedicalEvaluationCrud::class)->name('evaluations.index');
     Route::get('/fichas', HemodialysisSessionCrud::class)->name('sessions.index');
     Route::get('/notas-enfermeria', HemodialysisNursingNoteCrud::class)->name('nursing-notes.index');
     Route::get('/monitoreo-laboratorio', HemodialysisLaboratoryMonitorCrud::class)->name('laboratory-monitors.index');
 
-    Route::get('/ingresos/{record}/pdf', [HemodialysisPdfController::class, 'admission'])->middleware('permission:imprimir_hd')->name('admissions.pdf');
-    Route::get('/evaluaciones-medicas/{record}/pdf', [HemodialysisPdfController::class, 'evaluation'])->middleware('permission:imprimir_hd')->name('evaluations.pdf');
-    Route::get('/fichas/{record}/pdf', [HemodialysisPdfController::class, 'session'])->middleware('permission:imprimir_hd')->name('sessions.pdf');
-    Route::get('/notas-enfermeria/{record}/pdf', [HemodialysisPdfController::class, 'nursingNote'])->middleware('permission:imprimir_hd')->name('nursing-notes.pdf');
-    Route::get('/monitoreo-laboratorio/{record}/pdf', [HemodialysisPdfController::class, 'laboratoryMonitor'])->middleware('permission:imprimir_hd')->name('laboratory-monitors.pdf');
+    Route::get('/ingresos/{record}/pdf', [HemodialysisPdfController::class, 'admission'])->name('admissions.pdf');
+    Route::get('/evaluaciones-medicas/{record}/pdf', [HemodialysisPdfController::class, 'evaluation'])->name('evaluations.pdf');
+    Route::get('/fichas/{record}/pdf', [HemodialysisPdfController::class, 'session'])->name('sessions.pdf');
+    Route::get('/notas-enfermeria/{record}/pdf', [HemodialysisPdfController::class, 'nursingNote'])->name('nursing-notes.pdf');
+    Route::get('/monitoreo-laboratorio/{record}/pdf', [HemodialysisPdfController::class, 'laboratoryMonitor'])->name('laboratory-monitors.pdf');
 });

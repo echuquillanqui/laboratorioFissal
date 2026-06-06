@@ -26,8 +26,8 @@ trait Concerns
         return Auth::id();
     }
 
-    protected function can(string $permission): bool
+    protected function can(string $_permission): bool
     {
-        return ! Auth::check() || method_exists(Auth::user(), 'can') ? (bool) Auth::user()?->can($permission) : true;
+        return Auth::check();
     }
 }

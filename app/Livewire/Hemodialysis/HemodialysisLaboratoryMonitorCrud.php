@@ -71,11 +71,74 @@ class HemodialysisLaboratoryMonitorCrud extends Component
 
     private function blankResults(): array
     {
-        return [
-            ['nombre_prueba' => 'Urea', 'valor' => '', 'unidad' => 'mg/dL', 'valor_referencia' => '', 'alerta' => false],
-            ['nombre_prueba' => 'Creatinina', 'valor' => '', 'unidad' => 'mg/dL', 'valor_referencia' => '', 'alerta' => false],
-            ['nombre_prueba' => 'Potasio', 'valor' => '', 'unidad' => 'mEq/L', 'valor_referencia' => '', 'alerta' => false],
+        $tests = [
+            ['Función renal', 'Urea', 'mg/dL'],
+            ['Función renal', 'Creatinina', 'mg/dL'],
+            ['Función renal', 'Proteinuria 24 h', 'mg/24 h'],
+            ['Función renal', 'Albuminuria 24 h', 'mg/24 h'],
+            ['Función renal', 'CKD-EPI 2021', 'mL/min/1.73 m²'],
+            ['Hemograma/coagulación/reactantes', 'Leucocitos', 'cel/mm³'],
+            ['Hemograma/coagulación/reactantes', 'Abastonados', '%'],
+            ['Hemograma/coagulación/reactantes', 'Plaquetas', 'cel/mm³'],
+            ['Hemograma/coagulación/reactantes', 'PCR', 'mg/L'],
+            ['Hemograma/coagulación/reactantes', 'VSG', 'mm/h'],
+            ['Hemograma/coagulación/reactantes', 'Procalcitonina', 'ng/mL'],
+            ['Hemograma/coagulación/reactantes', 'TTPa', 's'],
+            ['Hemograma/coagulación/reactantes', 'TP - INR', 'INR'],
+            ['Perfil de anemia', 'Hemoglobina', 'g/dL'],
+            ['Perfil de anemia', 'Hematocrito', '%'],
+            ['Perfil de anemia', 'Ferritina', 'ng/mL'],
+            ['Perfil de anemia', 'Sat. transferrina', '%'],
+            ['Perfil de anemia', 'B12', 'pg/mL'],
+            ['Perfil de anemia', 'Ácido fólico', 'ng/mL'],
+            ['Perfil de anemia', 'Reticulocitos', '%'],
+            ['Medio interno/oxigenación', 'pH', ''],
+            ['Medio interno/oxigenación', 'pCO₂', 'mmHg'],
+            ['Medio interno/oxigenación', 'HCO₃', 'mEq/L'],
+            ['Medio interno/oxigenación', 'K⁺', 'mEq/L'],
+            ['Medio interno/oxigenación', 'Na⁺', 'mEq/L'],
+            ['Medio interno/oxigenación', 'Cl⁻', 'mEq/L'],
+            ['Medio interno/oxigenación', 'PaO₂/FiO₂', ''],
+            ['Metabolismo mineral/óseo', 'Calcio', 'mg/dL'],
+            ['Metabolismo mineral/óseo', 'Fósforo', 'mg/dL'],
+            ['Metabolismo mineral/óseo', 'PTHi', 'pg/mL'],
+            ['Metabolismo mineral/óseo', 'Fosfatasa alcalina', 'U/L'],
+            ['Metabolismo mineral/óseo', 'Magnesio', 'mg/dL'],
+            ['Función hepática', 'TGP/ALT', 'U/L'],
+            ['Función hepática', 'TGO/AST', 'U/L'],
+            ['Función hepática', 'Proteínas totales', 'g/dL'],
+            ['Función hepática', 'Albúmina', 'g/dL'],
+            ['Función hepática', 'Bilirrubinas totales', 'mg/dL'],
+            ['Función hepática', 'Bilirrubina directa', 'mg/dL'],
+            ['Perfil lipídico', 'Colesterol total', 'mg/dL'],
+            ['Perfil lipídico', 'LDL', 'mg/dL'],
+            ['Perfil lipídico', 'HDL', 'mg/dL'],
+            ['Perfil lipídico', 'TG', 'mg/dL'],
+            ['Autoinmunidad', 'ANA', ''],
+            ['Autoinmunidad', 'ANCA P', ''],
+            ['Autoinmunidad', 'ANCA C', ''],
+            ['Autoinmunidad', 'Factor reumatoideo', 'UI/mL'],
+            ['Autoinmunidad', 'Coombs directo', ''],
+            ['Examen de orina', 'Leucocitos', 'cel/campo'],
+            ['Examen de orina', 'Hematíes', 'cel/campo'],
+            ['Examen de orina', 'Hematíes dismórficos', ''],
+            ['Examen de orina', 'Cilindros hemáticos', ''],
+            ['Examen de orina', 'Cilindros céreos', ''],
+            ['Examen de orina', 'Albuminuria (cualitativa)', ''],
+            ['Examen de orina', 'Glucosuria', ''],
+            ['Diuresis', 'Diuresis diaria', 'mL/24 h'],
         ];
+
+        return array_map(
+            fn (array $test) => [
+                'nombre_prueba' => $test[1].' · '.$test[0],
+                'valor' => '',
+                'unidad' => $test[2],
+                'valor_referencia' => '',
+                'alerta' => false,
+            ],
+            $tests
+        );
     }
 
     public function render()
